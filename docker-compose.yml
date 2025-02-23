@@ -1,5 +1,5 @@
 include:
-    - docker-compose-redis.yml
+    # - docker-compose-redis.yml
     - docker-compose-db.yml
 
 name: gauniv
@@ -14,7 +14,7 @@ services:
           - ASPNETCORE_HTTP_PORTS=80
           - ASPNETCORE_HTTPS_PORTS=443
           - ConnectionStrings:DefaultConnection=Server=postgres_primary;Port=5432;Database=db;Username=admin;Password=password
-          - ConnectionStrings:redis=redis-sentinel:26379,serviceName=mymaster,password=redis
+          # - ConnectionStrings:redis=redis-sentinel:26379,serviceName=mymaster,password=redis
         ports:
           - "80"
           - "443"
