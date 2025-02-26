@@ -35,6 +35,8 @@ namespace Gauniv.WebServer.Data
                     Description = "Un RPG futuriste en monde ouvert.",
                     Payload = new byte[] { }, // Peut être remplacé par un fichier réel
                     Prix = 59.99m,
+                    Categories = new List<Category> { new Category { Id = 1, Nom = "Action" },
+                new Category { Id = 2, Nom = "RPG" },}
                     //Categories = new List<Category> { new Category { Id = 2, Nom = "RPG" } }
 
                 },

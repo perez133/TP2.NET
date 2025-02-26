@@ -16,22 +16,22 @@ namespace Gauniv.WebServer.Controllers
         
         [Route("api/games")]
         [HttpGet]
-        public async Task<ActionResult<List<GameDto>>> GetAllGames()
+        public ActionResult<List<GameDto>> GetAllGames()
         {
-            var games = await _gameService.GetAllGamesAsync();
-            return Ok(games);
+            return _gameService.GetAllGames();
+             
         }
 
         [Route("api/games/{id}")]
         [HttpGet]
-        public async Task<ActionResult<GameDto>> GetGameById(int id)
+        public ActionResult<GameDto> GetGameById(int id)
         {
-            var game = await _gameService.GetGameByIdAsync(id);
+            var game = _gameService.GetGameById(id);
             if (game == null)
             {
                 return NotFound();
             }
-            return Ok(game);
+            return game;
         }
     }
 }

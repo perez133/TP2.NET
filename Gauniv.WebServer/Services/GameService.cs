@@ -1,48 +1,51 @@
 ﻿using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Dtos;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using Dapper;
+
 
 namespace Gauniv.WebServer.Services
 {
     public class GameService : IGameService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly string _connectionString;
 
-        public GameService(ApplicationDbContext context)
+        public GameService(IConfiguration configuration)
         {
-            _context = context;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+        public List<GameDto> GetAllGames()
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open(); // Ouvrir la connexion explicitement
+
+                string query = @"
+                    SELECT *
+                    FROM public.""Games""";  // IMPORTANT : public."Games"
+
+                return connection.Query<GameDto>(query).ToList();
+            }
         }
 
-        public async Task<List<GameDto>> GetAllGamesAsync()
+        public GameDto GetGameById(int id)
         {
-            return await _context.Games
-                .Include(g => g.Categories) // Charge les catégories
-                .Select(g => new GameDto
-                {
-                    Id = g.Id,
-                    Nom = g.Nom,
-                    Description = g.Description,
-                    Prix = g.Prix,
-                    Categories = g.Categories.Select(c => c.Nom).ToList()
-                })
-                .ToListAsync();
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open(); // Ouvrir la connexion explicitement
+
+                string query = @"
+                    SELECT *
+                    FROM public.""Games""
+                    WHERE ""Id"" = @Id"; // IMPORTANT : public."Games"
+
+                return connection.QueryFirstOrDefault<GameDto>(query, new { Id = id });
+            }
         }
 
-        public async Task<GameDto> GetGameByIdAsync(int id)
-        {
-            return await _context.Games
-                .Include(g => g.Categories) // Charge les catégories
-                .Where(g => g.Id == id)
-                .Select(g => new GameDto
-                {
-                    Id = g.Id,
-                    Nom = g.Nom,
-                    Description = g.Description,
-                    Prix = g.Prix,
-                    Categories = g.Categories.Select(c => c.Nom).ToList()
-                })
-                .FirstOrDefaultAsync();
-        }
+
+
     }
 }
 
