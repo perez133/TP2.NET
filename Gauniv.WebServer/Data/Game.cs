@@ -25,15 +25,4 @@ namespace Gauniv.WebServer.Data
 
         public List<Category> Categories { get; set; } = new List<Category>(); // Un jeu peut avoir plusieurs catégories
     }
-
-    public class Category
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Nom { get; set; }
-    }
 }

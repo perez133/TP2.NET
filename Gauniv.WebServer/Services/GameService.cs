@@ -9,39 +9,46 @@ namespace Gauniv.WebServer.Services
 {
     public class GameService : IGameService
     {
-        private readonly string _connectionString;
-
-        public GameService(IConfiguration configuration)
+        
+        private ApplicationDbContext? applicationDbContext;
+        private readonly IServiceProvider serviceProvider;
+        public GameService(IServiceProvider serviceProvider)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+           this.serviceProvider = serviceProvider;
         }
         public List<GameDto> GetAllGames()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var scope = serviceProvider.CreateScope()) {
+                applicationDbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                return applicationDbContext.Games
+            .Include(g => g.Categories) // ✅ Charge les catégories associées
+            .Select(g => new GameDto
             {
-                connection.Open(); // Ouvrir la connexion explicitement
-
-                string query = @"
-                    SELECT *
-                    FROM public.""Games""";  // IMPORTANT : public."Games"
-
-                return connection.Query<GameDto>(query).ToList();
+                Id = g.Id,
+                Nom = g.Nom,
+                Description = g.Description,
+                Prix = g.Prix,
+                Categories = g.Categories.Select(c => c.Nom).ToList() // ✅ Transforme en liste de noms de catégories
+            })
+            .ToList();
             }
+            
         }
 
         public GameDto GetGameById(int id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                connection.Open(); // Ouvrir la connexion explicitement
-
-                string query = @"
-                    SELECT *
-                    FROM public.""Games""
-                    WHERE ""Id"" = @Id"; // IMPORTANT : public."Games"
-
-                return connection.QueryFirstOrDefault<GameDto>(query, new { Id = id });
-            }
+            // using (var connection = new NpgsqlConnection(_connectionString))
+            // {
+            //     connection.Open(); // Ouvrir la connexion explicitement
+            //
+            //     string query = @"
+            //         SELECT *
+            //         FROM public.""Games""
+            //         WHERE ""Id"" = @Id"; // IMPORTANT : public."Games"
+            //
+            //     return connection.QueryFirstOrDefault<GameDto>(query, new { Id = id });
+            // }
+            return null;
         }
 
 
