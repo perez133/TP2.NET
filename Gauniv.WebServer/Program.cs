@@ -16,8 +16,11 @@ CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 
-var builder = WebApplication.CreateBuilder(args);
 
+
+var builder = WebApplication.CreateBuilder(args);
+// bg ad 
+builder.Services.AddScoped<IGameService, GameService>();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
