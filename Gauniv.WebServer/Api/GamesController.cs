@@ -106,23 +106,33 @@ namespace Gauniv.WebServer.Api
             return Ok(games);
         }
 
-        // GET: /api/games/{id}/download
+        // Inside GamesController.cs (existing file)
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadGame(int id)
         {
-            // Retrieve the game from the database to access its Payload.
-            // (Casting _gameService to GameService to expose _context.)
+            // Retrieve the game from the context
             var game = await ((GameService)_gameService)._context.Games.FindAsync(id);
             if (game == null)
                 return NotFound();
 
-            if (game.Payload == null || game.Payload.Length == 0)
-                return NotFound("Game binary not found");
-
-            // Stream the payload from memory.
-            var stream = new MemoryStream(game.Payload);
-            return File(stream, "application/octet-stream", $"{game.Nom}.bin");
+            // If you decide to store file paths externally, assume Game model has a FilePath property.
+            // For now, if FilePath is not empty and the file exists, stream that file.
+            // Otherwise, stream the binary from the Payload.
+            string filePath = ""; // Replace with game.FilePath if implemented.
+            if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
+            {
+                var stream = System.IO.File.OpenRead(filePath);
+                return File(stream, "application/octet-stream", $"{game.Nom}.bin");
+            }
+            else
+            {
+                if (game.Payload == null || game.Payload.Length == 0)
+                    return NotFound("Game binary not found");
+                var stream = new MemoryStream(game.Payload);
+                return File(stream, "application/octet-stream", $"{game.Nom}.bin");
+            }
         }
+
     }
 
     // Request DTOs for adding/updating games.

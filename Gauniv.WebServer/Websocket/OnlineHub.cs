@@ -1,35 +1,37 @@
 ﻿using Gauniv.WebServer.Data;
-using Gauniv.WebServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-
-public class OnlineStatus()
-{
-    public User User { get; set; }
-    public int Count { get; set; }
-}
+using System.Collections.Concurrent;
+using System.Security.Claims;
 
 namespace Gauniv.WebServer.Websocket
 {
     public class OnlineHub : Hub
     {
+        // In-memory dictionary to track online users.
+        public static ConcurrentDictionary<string, bool> ConnectedUsers = new ConcurrentDictionary<string, bool>();
 
-        public static Dictionary<string, OnlineStatus> ConnectedUsers = [];
-        private readonly UserManager<User> userManager;
-        private readonly RedisService redisService;
-
-        public OnlineHub(UserManager<User> userManager, RedisService redisService)
+        public override async Task OnConnectedAsync()
         {
-            this.userManager = userManager;
-            this.redisService = redisService;
+            // Retrieve the user id from the claims.
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                ConnectedUsers[userId] = true;
+                await Clients.All.SendAsync("UserStatusChanged", userId, true);
+            }
+            await base.OnConnectedAsync();
         }
 
-        public async override Task OnConnectedAsync()
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-        }
-
-        public async override Task OnDisconnectedAsync(Exception? exception)
-        {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                ConnectedUsers.TryRemove(userId, out _);
+                await Clients.All.SendAsync("UserStatusChanged", userId, false);
+            }
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

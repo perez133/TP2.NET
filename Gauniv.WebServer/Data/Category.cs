@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿// File: Data/Category.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Gauniv.WebServer.Data
 {
@@ -14,7 +15,7 @@ namespace Gauniv.WebServer.Data
         [StringLength(50)]
         public string Nom { get; set; }
 
-        // Relation Many-to-Many
-        public List<Game> Games { get; set; } = new List<Game>();
+        // Add the navigation property:
+        public ICollection<Game> Games { get; set; } = new List<Game>();
     }
 }
