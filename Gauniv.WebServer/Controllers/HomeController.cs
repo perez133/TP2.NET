@@ -1,30 +1,34 @@
+// File: Gauniv.WebServer/Controllers/HomeController.cs
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using CommunityToolkit.HighPerformance;
+using Microsoft.AspNetCore.Mvc;
 using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
-using X.PagedList.Extensions;
 
 namespace Gauniv.WebServer.Controllers
 {
-    public class HomeController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext, UserManager<User> userManager) : Controller
+    public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger = logger;
-        private readonly ApplicationDbContext applicationDbContext = applicationDbContext;
-        private readonly UserManager<User> userManager = userManager;
+        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public IActionResult Index()
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<User> userManager)
         {
-            return View(new List<Game> { new() { Id = 0 } });
+            _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
+        // GET: /Home/Index
+        public async Task<IActionResult> Index()
+        {
+            var games = await _context.Games.Include(g => g.Categories).ToListAsync();
+            return View(games);
+        }
 
+        // GET: /Home/Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
