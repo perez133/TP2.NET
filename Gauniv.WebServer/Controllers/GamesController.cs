@@ -1,5 +1,6 @@
 ﻿using Gauniv.WebServer.Dtos;
 using Gauniv.WebServer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gauniv.WebServer.Controllers
@@ -13,7 +14,7 @@ namespace Gauniv.WebServer.Controllers
         {
             _gameService = gameService;
         }
-        
+        [Authorize(Roles = "Admin")]
         [Route("api/games")]
         [HttpGet]
         public ActionResult<List<GameDto>> GetAllGames()
