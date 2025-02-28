@@ -1,31 +1,47 @@
-html {
-  font-size: 14px;
+/* STEAM COLOR PALETTE (based on screenshots) */
+:root {
+    --steam-dark: #1b2838;
+    --steam-header: #171a21;
+    --steam-blue: #66c0f4;
+    --steam-green: #5c7e10;
+    --steam-green-hover: #4d6b0c;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Utility classes for background/text colors */
+.bg-steAMDark {
+    background-color: var(--steam-dark);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.bg-steamHeader {
+    background-color: var(--steam-header);
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.text-steamBlue {
+    color: var(--steam-blue);
 }
 
-body {
-  margin-bottom: 60px;
+.bg-steamGreen {
+    background-color: var(--steam-green);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.bg-steamGreenHover:hover {
+    background-color: var(--steam-green-hover);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* The main body background color */
+body.bg-steamDark {
+    background-color: var(--steam-dark);
+    color: #fff;
+    font-family: "Motiva Sans", Arial, sans-serif; /* Steam uses a custom font called Motiva Sans */
+}
+
+/* Hover states for the nav */
+.header-nav a:hover {
+    color: var(--steam-blue);
+}
+
+/* Additional styling for placeholders */
+img {
+    max-width: 100%;
+    display: block;
 }

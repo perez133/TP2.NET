@@ -1,57 +1,100 @@
-﻿<!DOCTYPE html>
+﻿@* Views/Shared/_Layout.cshtml *@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gauniv.WebServer</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    @if(User?.Identity?.IsAuthenticated is not null or false)
+
+    <!-- Tailwind CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+    <!-- Custom site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Main site JS -->
+    <script src="~/js/site.js" defer></script>
+
+    @if (User?.Identity?.IsAuthenticated is not null or false)
     {
         <script src="~/js/signalr/dist/browser/signalr.js"></script>
-            <script src="~/js/online.js"></script>
+        <script src="~/js/online.js"></script>
     }
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Gauniv.WebServer.styles.css" asp-append-version="true" />
-    
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Gauniv.WebServer</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="swagger" asp-action="index">Swagger</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+<body class="bg-steamDark text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-steamHeader shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Left: Steam Logo and Brand -->
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center">
+                        <!-- Placeholder Steam-like Logo -->
+                        <img src="/images/steam-logo-placeholder.png" alt="Steam Logo" class="h-8 w-auto mr-2" />
+                        <span class="text-xl font-bold text-white hover:text-steamBlue">STEAM</span>
+                    </a>
+
+                    <!-- Desktop Nav -->
+                    <nav class="hidden md:flex items-center space-x-6 ml-8">
+                        <a href="/Store" class="hover:text-steamBlue uppercase tracking-wide">Store</a>
+                        <a href="/Community" class="hover:text-steamBlue uppercase tracking-wide">Community</a>
+                        <a href="/About" class="hover:text-steamBlue uppercase tracking-wide">About</a>
+                        <a href="/Support" class="hover:text-steamBlue uppercase tracking-wide">Support</a>
+                        <!-- Keep the swagger link in the header -->
+                        <a href="/swagger" class="hover:text-steamBlue uppercase tracking-wide">Swagger</a>
+                    </nav>
+                </div>
+
+                <!-- Right: Install Steam Button, Login, Language -->
+                <div class="flex items-center space-x-4">
+                    <a href="/Install" class="bg-steamGreen hover:bg-steamGreenHover text-white px-4 py-2 rounded hidden sm:inline-block">
+                        Install Steam
+                    </a>
+                    <a href="/Login" class="hover:text-steamBlue">login</a>
+                    <a href="/Language" class="hover:text-steamBlue">language ▾</a>
+                    <!-- Mobile Nav Toggle -->
+                    <button id="mobile-nav-toggle" class="md:hidden focus:outline-none hover:text-steamBlue">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </nav>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-nav" class="bg-steamHeader hidden md:hidden">
+            <div class="px-4 py-2 space-y-1">
+                <a href="/Store" class="block hover:text-steamBlue uppercase">Store</a>
+                <a href="/Community" class="block hover:text-steAMBlue uppercase">Community</a>
+                <a href="/About" class="block hover:text-steamBlue uppercase">About</a>
+                <a href="/Support" class="block hover:text-steamBlue uppercase">Support</a>
+                <a href="/swagger" class="block hover:text-steamBlue uppercase">Swagger</a>
+            </div>
+        </div>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Gauniv.WebServer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-steamHeader text-gray-300 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm">
+            <p class="text-center">
+                &copy; 2024 - Gauniv.WebServer. All rights reserved.
+                <a href="/Home/Privacy" class="text-steAMBlue hover:underline">Privacy</a>
+            </p>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Script for toggling mobile nav -->
+    <script>
+        document.getElementById('mobile-nav-toggle').addEventListener('click', function() {
+          const nav = document.getElementById('mobile-nav');
+          nav.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>

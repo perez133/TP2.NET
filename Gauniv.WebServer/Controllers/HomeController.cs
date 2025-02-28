@@ -1,38 +1,37 @@
-// File: Gauniv.WebServer/Controllers/HomeController.cs
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gauniv.WebServer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<User> userManager)
+        public IActionResult Index()
         {
-            _logger = logger;
-            _context = context;
-            _userManager = userManager;
-        }
+            // Populate sample featured games.
+            var featuredGames = new List<GameViewModel>
+            {
+                new GameViewModel { Name = "Cyberpunk 2077", Description = "Futuristic RPG in an open world.", Price = 59.99m, ImageUrl = "/images/cyberpunk.jpg" },
+                new GameViewModel { Name = "The Witcher 3", Description = "Epic RPG with rich story.", Price = 39.99m, ImageUrl = "/images/witcher3.jpg" },
+                new GameViewModel { Name = "Age of Empires IV", Description = "Real-time strategy game.", Price = 49.99m, ImageUrl = "/images/aoe4.jpg" },
+                // Add more as needed...
+            };
 
-        // GET: /Home/Index
-        public async Task<IActionResult> Index()
-        {
-            var games = await _context.Games.Include(g => g.Categories).ToListAsync();
-            return View(games);
-        }
+            // Populate sample categories.
+            var categories = new List<CategoryViewModel>
+            {
+                new CategoryViewModel { Id = 1, Name = "Action" },
+                new CategoryViewModel { Id = 2, Name = "RPG" },
+                new CategoryViewModel { Id = 3, Name = "Strategy" },
+                // Add more if needed...
+            };
 
-        // GET: /Home/Error
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var model = new HomeViewModel
+            {
+                FeaturedGames = featuredGames,
+                Categories = categories
+            };
+
+            return View(model);
         }
     }
 }

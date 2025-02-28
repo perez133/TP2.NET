@@ -1,23 +1,87 @@
-﻿@model List<Gauniv.WebServer.Data.Game>
-@using X.PagedList.Mvc.Core;
-@using X.PagedList;
+﻿@model Gauniv.WebServer.Models.HomeViewModel
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Home";
 }
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
-<h1>View</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="flex flex-col lg:flex-row gap-4">
+    <!-- Left Column / Slider Menu -->
+    <aside class="bg-steamHeader p-4 w-full lg:w-64 flex-shrink-0 text-sm hidden lg:block">
+        <h2 class="text-steamBlue font-bold mb-4">STEAM DECK</h2>
+        <img src="/images/steamdeck-placeholder.jpg" alt="Steam Deck" class="mb-4" />
+
+        <h2 class="text-steamBlue font-bold mb-4">STEAM GIFT CARDS</h2>
+        <ul class="space-y-1 mb-6">
+            <li><a href="#" class="hover:text-steamBlue">By Friends</a></li>
+            <li><a href="#" class="hover:text-steamBlue">By Game</a></li>
+        </ul>
+
+        <h2 class="text-steamBlue font-bold mb-2">RECOMMENDED</h2>
+        <ul class="space-y-1 mb-6">
+            <li><a href="#" class="hover:text-steamBlue">New Releases</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Specials</a></li>
+            <li><a href="#" class="hover:text-steamBlue">VR Titles</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Free to Play</a></li>
+        </ul>
+
+        <h2 class="text-steamBlue font-bold mb-2">BROWSE CATEGORIES</h2>
+        <ul class="space-y-1">
+            <li><a href="#" class="hover:text-steamBlue">Top Sellers</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Upcoming</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Action</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Adventure</a></li>
+            <li><a href="#" class="hover:text-steamBlue">RPG</a></li>
+            <li><a href="#" class="hover:text-steamBlue">Sports</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 space-y-6">
+        <!-- Hero Carousel -->
+        <section class="relative bg-gray-700 rounded overflow-hidden">
+            <img src="/images/hero-game-placeholder.jpg" alt="Hero Game" class="w-full h-64 object-cover" />
+            <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4">
+                <h3 class="text-xl font-bold">Warframe 1999</h3>
+                <p class="text-sm">Just Updated! Free To Play</p>
+            </div>
+            <!-- Carousel dots or arrows could go here -->
+        </section>
+
+        <!-- Special Offers -->
+        <section>
+            <h2 class="text-xl font-bold text-steamBlue mb-2">SPECIAL OFFERS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Example Deal 1 -->
+                <div class="bg-gray-800 p-4 rounded">
+                    <img src="/images/deal-placeholder1.jpg" alt="Deal 1" class="mb-2" />
+                    <p class="font-bold">Weekend Deal -20%</p>
+                    <p class="text-sm">Offer ends 31 May at 7:00pm.</p>
+                </div>
+                <!-- Example Deal 2 -->
+                <div class="bg-gray-800 p-4 rounded">
+                    <img src="/images/deal-placeholder2.jpg" alt="Deal 2" class="mb-2" />
+                    <p class="font-bold">Command & Conquer Franchise Sale -70%</p>
+                    <p class="text-sm">Offer ends 13 Mar at 6:00pm.</p>
+                </div>
+                <!-- Example Deal 3 -->
+                <div class="bg-gray-800 p-4 rounded">
+                    <img src="/images/deal-placeholder3.jpg" alt="Deal 3" class="mb-2" />
+                    <p class="font-bold">Today's Deal -50%</p>
+                    <p class="text-sm">Ends in 9h 57m</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Browse by Category or Genre -->
+        <section>
+            <h2 class="text-xl font-bold text-steamBlue mb-2">BROWSE BY GENRE</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach (var category in Model.Categories)
+                {
+                    <a href="/Store?category=@category.Id" class="bg-gray-800 rounded p-4 hover:bg-gray-700 text-center">
+                        <h3 class="font-bold">@category.Name</h3>
+                    </a>
+                }
+            </div>
+        </section>
+    </div>
+</div>
