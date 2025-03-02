@@ -30,7 +30,23 @@ namespace Gauniv.WebServer.Controllers
                 return NotFound("Game payload is empty.");
             }
 
-            // Mark game as downloaded: store the game ID in session.
+            // Stream the game binary with the file name <GameName>.exe
+            var stream = new MemoryStream(game.Payload);
+            return File(stream, "application/octet-stream", $"{game.Nom}.exe");
+        }
+
+        // POST: /File/MarkAsDownloaded?id={id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MarkAsDownloaded(int id)
+        {
+            var game = _context.Games.Find(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            // Get the downloaded game IDs from session.
             var downloadedJson = HttpContext.Session.GetString("DownloadedGameIds");
             var downloadedIds = downloadedJson != null
                 ? System.Text.Json.JsonSerializer.Deserialize<List<int>>(downloadedJson)
@@ -42,8 +58,7 @@ namespace Gauniv.WebServer.Controllers
                 HttpContext.Session.SetString("DownloadedGameIds", System.Text.Json.JsonSerializer.Serialize(downloadedIds));
             }
 
-            var stream = new MemoryStream(game.Payload);
-            return File(stream, "application/octet-stream", $"{game.Nom}.exe");
+            return Json(new { success = true });
         }
 
         // GET: /File/Launch/{id}
@@ -54,7 +69,8 @@ namespace Gauniv.WebServer.Controllers
             {
                 return NotFound("Game not found.");
             }
-            // Check if the game is marked as downloaded in session.
+
+            // Check if the game has been marked as downloaded.
             var downloadedJson = HttpContext.Session.GetString("DownloadedGameIds");
             var downloadedIds = downloadedJson != null
                 ? System.Text.Json.JsonSerializer.Deserialize<List<int>>(downloadedJson)
@@ -65,12 +81,11 @@ namespace Gauniv.WebServer.Controllers
                 return BadRequest("Game has not been downloaded yet.");
             }
 
-            // Simulate launching the game. In a real scenario, you'd trigger a client-side action.
             var model = new LaunchGameViewModel
             {
                 GameId = game.Id,
                 GameName = game.Nom,
-                Status = "Launched"
+                Status = "Ready to Launch"
             };
 
             return View(model);
@@ -81,7 +96,6 @@ namespace Gauniv.WebServer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            // Remove the game from session (simulate deletion from library)
             var downloadedJson = HttpContext.Session.GetString("DownloadedGameIds");
             var downloadedIds = downloadedJson != null
                 ? System.Text.Json.JsonSerializer.Deserialize<List<int>>(downloadedJson)
