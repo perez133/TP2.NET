@@ -14,7 +14,7 @@ namespace Gauniv.WebServer.Data
         [StringLength(100)]
         public string Prenom { get; set; }
 
-        // Already defined: games owned by the user.
+        // Games owned by the user.
         public List<Game> JeuxAchetes { get; set; } = new List<Game>();
 
         // Friend relationships (many-to-many self reference)

@@ -5,7 +5,7 @@
 namespace Gauniv.WebServer.Migrations
 {
     /// <inheritdoc />
-    public partial class FiltrMigra : Migration
+    public partial class Friend : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

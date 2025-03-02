@@ -1,0 +1,62 @@
+﻿@model Gauniv.WebServer.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Create an Account";
+}
+
+<div class="max-w-md mx-auto mt-8">
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-500 text-white p-2 mb-4 rounded">
+            @TempData["Error"]
+        </div>
+    }
+    <div class="bg-gray-800 p-6 rounded shadow">
+        <h2 class="text-2xl font-bold text-center mb-4">Create an Account</h2>
+        <form asp-action="Register" method="post">
+            <div class="mb-4">
+                <label asp-for="UserName" class="block text-gray-300">Username</label>
+                <input asp-for="UserName" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="UserName" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Email" class="block text-gray-300">Email</label>
+                <input asp-for="Email" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="Email" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Nom" class="block text-gray-300">Last Name</label>
+                <input asp-for="Nom" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="Nom" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Prenom" class="block text-gray-300">First Name</label>
+                <input asp-for="Prenom" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="Prenom" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Password" class="block text-gray-300">Password</label>
+                <input asp-for="Password" type="password" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="Password" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="block text-gray-300">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                <span asp-validation-for="ConfirmPassword" class="text-red-500 text-sm"></span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="px-4 py-2 bg-steamGreen hover:bg-steamGreenHover text-white rounded">
+                    Register
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="text-center mt-4">
+        <a href="/Account/Login" class="text-steamBlue hover:underline">
+            Already have an account? Login
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
