@@ -29,7 +29,7 @@ namespace Gauniv.Client
 
             Task.Run(() =>
             {
-                //var client = app.Services.GetRequiredService<v1Client>();
+                //var client = app.Services.GetRequiredService<v1Client>(); test
                 //var categories = await client.CategoriesAsync();
 
                 //Console.WriteLine("📌 Liste des catégories :");
