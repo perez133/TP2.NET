@@ -15,7 +15,7 @@
     <!-- Main site JS -->
     <script src="~/js/site.js" defer></script>
 
-    @if (User?.Identity?.IsAuthenticated is not null or false)
+    @if (User?.Identity?.IsAuthenticated == true)
     {
         <script src="~/js/signalr/dist/browser/signalr.js"></script>
         <script src="~/js/online.js"></script>
@@ -26,21 +26,20 @@
     <header class="bg-steamHeader shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Left: Logo and Primary Navigation -->
+                <!-- Left: Logo and Navigation -->
                 <div class="flex items-center space-x-4">
                     <a href="/" class="flex items-center">
                         <img src="/images/steam-logo-placeholder.png" alt="Steam Logo" class="h-8 w-auto mr-2" />
                         <span class="text-xl font-bold text-white hover:text-steamBlue">STEAM</span>
                     </a>
-                    <!-- Desktop Nav: common links -->
                     <nav class="hidden md:flex items-center space-x-6 ml-8">
+                        <a href="/" class="hover:text-steamBlue uppercase tracking-wide">Home</a>
                         <a href="/Store" class="hover:text-steamBlue uppercase tracking-wide">Store</a>
                         <a href="/Community" class="hover:text-steamBlue uppercase tracking-wide">Community</a>
                         <a href="/About" class="hover:text-steamBlue uppercase tracking-wide">About</a>
                         <a href="/Support" class="hover:text-steamBlue uppercase tracking-wide">Support</a>
                         <a href="/swagger" class="hover:text-steamBlue uppercase tracking-wide">Swagger</a>
-                        @* If user is logged in, show additional navigation *@
-                        @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                        @if (User?.Identity?.IsAuthenticated == true)
                         {
                             <a href="/Library" class="hover:text-steamBlue uppercase tracking-wide">My Library</a>
                             <a href="/Shop" class="hover:text-steamBlue uppercase tracking-wide">Shop</a>
@@ -55,7 +54,7 @@
                     <a href="/Install" class="bg-steamGreen hover:bg-steamGreenHover text-white px-4 py-2 rounded hidden sm:inline-block">
                         Install Steam
                     </a>
-                    @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                    @if (User?.Identity?.IsAuthenticated == true)
                     {
                         <div class="relative inline-block text-left">
                             <button type="button" id="profile-button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-800 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none" aria-haspopup="true" aria-expanded="true">
@@ -92,12 +91,13 @@
         <!-- Mobile Navigation -->
         <div id="mobile-nav" class="bg-steamHeader hidden md:hidden">
             <div class="px-4 py-2 space-y-1">
+                <a href="/" class="block hover:text-steamBlue uppercase">Home</a>
                 <a href="/Store" class="block hover:text-steamBlue uppercase">Store</a>
                 <a href="/Community" class="block hover:text-steamBlue uppercase">Community</a>
                 <a href="/About" class="block hover:text-steamBlue uppercase">About</a>
                 <a href="/Support" class="block hover:text-steamBlue uppercase">Support</a>
                 <a href="/swagger" class="block hover:text-steamBlue uppercase">Swagger</a>
-                @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <a href="/Library" class="block hover:text-steamBlue uppercase">My Library</a>
                     <a href="/Shop" class="block hover:text-steamBlue uppercase">Shop</a>
@@ -111,7 +111,6 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        @* Display TempData notifications if any *@
         @if (TempData["Success"] != null)
         {
             <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">

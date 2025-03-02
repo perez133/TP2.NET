@@ -67,9 +67,33 @@
             </div>
         </section>
 
-        <!-- All Games Section -->
+        <!-- All Games Section with Filters -->
         <section>
             <h2 class="text-xl font-bold text-steamBlue mb-2">ALL GAMES</h2>
+            <!-- Filter Form -->
+            <form method="get" action="/Home/Index" class="mb-6">
+                <div class="flex flex-wrap gap-4">
+                    <input type="text" name="search" placeholder="Search by name" class="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                    <input type="number" step="0.01" name="minPrice" placeholder="Min Price" class="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                    <input type="number" step="0.01" name="maxPrice" placeholder="Max Price" class="p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+                    <select name="category" class="p-2 rounded bg-gray-700 border border-gray-600 text-white">
+                        <option value="">-- Select Category --</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    </select>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <label class="flex items-center text-gray-300">
+                            <input type="checkbox" name="owned" value="true" class="mr-2" /> Owned Only
+                        </label>
+                    }
+                    <button type="submit" class="px-4 py-2 bg-steamGreen hover:bg-steamGreenHover text-white rounded">Apply Filters</button>
+                </div>
+            </form>
+
+            <!-- Games Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach (var game in Model.AllGames)
                 {
@@ -88,7 +112,7 @@
         </section>
 
         <!-- Quick Navigation for Logged-In Users -->
-        @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated)
         {
             <section>
                 <h2 class="text-xl font-bold text-steamBlue mb-2">Quick Links</h2>

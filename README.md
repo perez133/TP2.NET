@@ -352,3 +352,45 @@ Le jeu doit mettre en place les IHM permettant aux joueurs de jouer
 - Ajout d’un temp maximal pour cliquer
 - Géré les joueurs dans la liste d’ami avec le statut correspondant
 - Remplacer le damier par une map créer par le MJ
+
+
+
+
+Credentials to test : 
+Admin:
+
+Username: admin
+Email: admin@example.com
+Password: AdminPassword1!
+Players:
+
+Username: player1
+Email: player1@example.com
+Password: Password1!
+Username: player2
+Email: player2@example.com
+Password: Password1!
+Username: player3
+Email: player3@example.com
+Password: Password1!
+Username: player4
+Email: player4@example.com
+Password: Password1!
+Username: player5
+Email: player5@example.com
+Password: Password1!
+Username: player6
+Email: player6@example.com
+Password: Password1!
+Username: player7
+Email: player7@example.com
+Password: Password1!
+Username: player8
+Email: player8@example.com
+Password: Password1!
+Username: player9
+Email: player9@example.com
+Password: Password1!
+Username: player10
+Email: player10@example.com
+Password: Password1!
