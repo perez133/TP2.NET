@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@using Microsoft.AspNetCore.Http
 @using System.Collections.Generic
 @model IEnumerable<Gauniv.WebServer.Data.Game>
 @{
@@ -16,28 +18,77 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @foreach (var game in Model)
         {
-            <div class="bg-gray-800 p-4 rounded hover:shadow-xl transition duration-300">
+            <div class="bg-gray-800 p-4 rounded hover:shadow-xl transition duration-300" id="game-@game.Id">
                 <h3 class="text-lg font-bold">@game.Nom</h3>
                 <p class="text-sm text-gray-400">
                     @(game.Description.Length > 80 ? game.Description.Substring(0, 80) + "..." : game.Description)
                 </p>
                 <p class="mt-2 text-green-500 font-semibold">$@game.Prix</p>
-                @if (downloadedGameIds.Contains(game.Id))
-                {
-                    <div class="mt-2">
-                        <a href="/File/Launch/@game.Id" class="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded">Launch</a>
-                        <form method="post" asp-controller="File" asp-action="Delete" class="inline-block ml-2">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@game.Id" />
-                            <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded">Delete</button>
-                        </form>
-                    </div>
-                }
-                else
-                {
-                    <a href="/File/Download/@game.Id" class="mt-2 block text-steamBlue hover:underline">Download (@game.Nom).exe</a>
-                }
+                <div class="mt-4">
+                    @if (downloadedGameIds.Contains(game.Id))
+                    {
+                        <div class="downloaded-buttons">
+                            <a href="/File/Launch/@game.Id" class="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded">Launch</a>
+                            <form method="post" asp-controller="File" asp-action="Delete" class="inline-block ml-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@game.Id" />
+                                <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded">Delete</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="download-btn px-4 py-2 bg-steamGreen hover:bg-steamGreenHover text-white rounded" data-game-id="@game.Id">
+                            Download (@game.Nom).exe
+                        </button>
+                    }
+                </div>
             </div>
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Get the anti-forgery token from a meta tag (if set in your layout) or directly inline.
+        var csrfToken = '@Antiforgery.GetAndStoreTokens(Context).RequestToken';
+
+        document.querySelectorAll('.download-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var gameId = this.getAttribute('data-game-id');
+                var markUrl = '/File/MarkAsDownloaded?id=' + gameId;
+                fetch(markUrl, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        // Update UI: Remove the download button and add Launch/Delete buttons.
+                        var container = document.getElementById('game-' + gameId);
+                        var controlDiv = container.querySelector('.mt-4');
+                        controlDiv.innerHTML = `
+                            <div class="downloaded-buttons">
+                                <a href="/File/Launch/${gameId}" class="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded">Launch</a>
+                                <form method="post" action="/File/Delete" class="inline-block ml-2">
+                                    <input type="hidden" name="id" value="${gameId}" />
+                                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded">Delete</button>
+                                </form>
+                            </div>`;
+                        // Trigger the file download using a temporary link.
+                        var downloadLink = document.createElement('a');
+                        downloadLink.href = '/File/Download/' + gameId;
+                        downloadLink.download = ''; // the server sets the file name
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+}
