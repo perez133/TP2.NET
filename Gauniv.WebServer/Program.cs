@@ -33,7 +33,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Configure Identity.
-builder.Services.AddDefaultIdentity<User>(options => {
+builder.Services.AddDefaultIdentity<User>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
@@ -59,8 +60,14 @@ builder.Services.AddSignalR();
 // Register hosted services.
 builder.Services.AddHostedService<OnlineService>();
 builder.Services.AddHostedService<SetupService>();
-// var redis = new RedisService(redisConnectionString);
-// builder.Services.AddSingleton(redis);
+
+// Add session support.
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -76,6 +83,10 @@ else
 }
 
 app.UseHttpsRedirection();
+
+// Enable session middleware.
+app.UseSession();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
