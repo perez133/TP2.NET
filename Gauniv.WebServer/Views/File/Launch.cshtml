@@ -1,0 +1,11 @@
+﻿@model Gauniv.WebServer.Models.LaunchGameViewModel
+@{
+    ViewData["Title"] = "Launch Game";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Launching @Model.GameName</h1>
+    <p class="text-lg">Status: @Model.Status</p>
+    <!-- Optionally, add additional UI elements to simulate or show launch progress -->
+    <p class="mt-4">If the game does not launch automatically, please ensure that the file exists in your download folder and try running it manually.</p>
+</div>
