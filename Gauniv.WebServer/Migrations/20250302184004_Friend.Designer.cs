@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gauniv.WebServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250302141716_FiltrMigra")]
-    partial class FiltrMigra
+    [Migration("20250302184004_Friend")]
+    partial class Friend
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,11 +294,14 @@ namespace Gauniv.WebServer.Migrations
                     b.Property<string>("FriendId")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("boolean");
+
                     b.HasKey("UserId", "FriendId");
 
                     b.HasIndex("FriendId");
 
-                    b.ToTable("UserFriends");
+                    b.ToTable("UserFriends", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

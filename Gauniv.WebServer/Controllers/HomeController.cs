@@ -1,4 +1,3 @@
-// File: Controllers/HomeController.cs
 using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -39,9 +38,13 @@ namespace Gauniv.WebServer.Controllers
 
             if (owned && User.Identity.IsAuthenticated)
             {
-                // Filter games that are owned by the logged-in user.
+                // Retrieve the IDs of games owned by the current user.
                 var currentUser = await _userManager.GetUserAsync(User);
-                query = query.Where(g => currentUser.JeuxAchetes.Any(j => j.Id == g.Id));
+                var ownedGameIds = await _context.Users
+                    .Where(u => u.Id == currentUser.Id)
+                    .SelectMany(u => u.JeuxAchetes.Select(j => j.Id))
+                    .ToListAsync();
+                query = query.Where(g => ownedGameIds.Contains(g.Id));
             }
 
             var games = await query.Skip(offset).Take(limit).ToListAsync();

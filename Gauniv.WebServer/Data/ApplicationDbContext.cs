@@ -10,19 +10,20 @@ namespace Gauniv.WebServer.Data
             : base(options)
         {
         }
+
         public DbSet<Game> Games { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<UserFriend> UserFriends { get; set; }  // For friend relationships
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // ⚠️ Ne pas oublier cette ligne !
+            base.OnModelCreating(modelBuilder); // ⚠️ Do not forget this line!
 
-            // Configure IdentityUserLogin primary key fix
+            // Configure IdentityUserLogin primary key fix.
             modelBuilder.Entity<IdentityUserLogin<string>>()
                 .HasKey(i => new { i.LoginProvider, i.ProviderKey });
 
-            // Seed Categories
+            // Seed Categories.
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Nom = "Action" },
                 new Category { Id = 2, Nom = "RPG" },
@@ -31,7 +32,7 @@ namespace Gauniv.WebServer.Data
                 new Category { Id = 5, Nom = "Puzzle" }
             );
 
-            // Seed Games – now with six entries.
+            // Seed Games – six entries.
             modelBuilder.Entity<Game>().HasData(
                 new Game
                 {
@@ -117,18 +118,22 @@ namespace Gauniv.WebServer.Data
 
             // Configure friend relationships.
             modelBuilder.Entity<UserFriend>()
+                .ToTable("UserFriends") // Explicitly set the table name.
                 .HasKey(uf => new { uf.UserId, uf.FriendId });
 
+            // For the relationship between UserFriend and User, explicitly specify the principal key.
             modelBuilder.Entity<UserFriend>()
                 .HasOne(uf => uf.User)
                 .WithMany(u => u.Friends)
                 .HasForeignKey(uf => uf.UserId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserFriend>()
                 .HasOne(uf => uf.Friend)
                 .WithMany(u => u.FriendOf)
                 .HasForeignKey(uf => uf.FriendId)
+                .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

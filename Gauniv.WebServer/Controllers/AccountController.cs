@@ -1,7 +1,6 @@
-﻿// File: Controllers/AccountController.cs
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Models;
 
@@ -9,13 +8,13 @@ namespace Gauniv.WebServer.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -26,6 +25,7 @@ namespace Gauniv.WebServer.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -38,18 +38,54 @@ namespace Gauniv.WebServer.Controllers
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                 {
-                    // Redirect admin to dashboard
                     return RedirectToAction("Dashboard", "Admin");
                 }
-                // Redirect regular player to home
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError("", "Invalid login attempt.");
+            TempData["Error"] = "Invalid username or password. Please try again.";
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = new User
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                Nom = model.Nom,
+                Prenom = model.Prenom
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                // Optionally assign the "Player" role
+                await _userManager.AddToRoleAsync(user, "Player");
+                TempData["Success"] = "Your account has been created successfully. You can now log in.";
+                return RedirectToAction("Login", "Account");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

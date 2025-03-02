@@ -1,4 +1,6 @@
-﻿namespace Gauniv.WebServer.Data
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Gauniv.WebServer.Data
 {
     public class UserFriend
     {
@@ -7,5 +9,8 @@
 
         public string FriendId { get; set; }
         public User Friend { get; set; }
+
+        // Indicates whether the friend request has been accepted.
+        public bool IsAccepted { get; set; }
     }
 }
