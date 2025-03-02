@@ -1,9 +1,11 @@
-﻿// File: Gauniv.WebServer/Controllers/AdminController.cs
+﻿// File: Controllers/AdminController.cs
 using Gauniv.WebServer.Data;
 using Gauniv.WebServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gauniv.WebServer.Controllers
 {
@@ -17,7 +19,14 @@ namespace Gauniv.WebServer.Controllers
             _context = context;
         }
 
-        // GET: /Admin
+        // GET: /Admin/Dashboard
+        public async Task<IActionResult> Dashboard()
+        {
+            var games = await _context.Games.Include(g => g.Categories).ToListAsync();
+            return View(games);
+        }
+
+        // GET: /Admin/Index - List all games.
         public async Task<IActionResult> Index()
         {
             var games = await _context.Games.Include(g => g.Categories).ToListAsync();
@@ -45,7 +54,7 @@ namespace Gauniv.WebServer.Controllers
             byte[] payload = new byte[0];
             if (model.File != null)
             {
-                using (var ms = new MemoryStream())
+                using (var ms = new System.IO.MemoryStream())
                 {
                     await model.File.CopyToAsync(ms);
                     payload = ms.ToArray();
@@ -62,19 +71,23 @@ namespace Gauniv.WebServer.Controllers
 
             if (model.CategoryIds != null)
             {
-                var categories = await _context.Categories.Where(c => model.CategoryIds.Contains(c.Id)).ToListAsync();
+                var categories = await _context.Categories
+                    .Where(c => model.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
                 game.Categories = categories;
             }
 
             _context.Games.Add(game);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Game created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/EditGame/5
+        // GET: /Admin/EditGame/{id}
         public async Task<IActionResult> EditGame(int id)
         {
-            var game = await _context.Games.Include(g => g.Categories).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _context.Games.Include(g => g.Categories)
+                                           .FirstOrDefaultAsync(g => g.Id == id);
             if (game == null)
                 return NotFound();
 
@@ -91,7 +104,7 @@ namespace Gauniv.WebServer.Controllers
             return View(model);
         }
 
-        // POST: /Admin/EditGame/5
+        // POST: /Admin/EditGame/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGame(int id, EditViewModel model)
@@ -105,7 +118,8 @@ namespace Gauniv.WebServer.Controllers
                 return View(model);
             }
 
-            var game = await _context.Games.Include(g => g.Categories).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _context.Games.Include(g => g.Categories)
+                                           .FirstOrDefaultAsync(g => g.Id == id);
             if (game == null)
                 return NotFound();
 
@@ -115,7 +129,7 @@ namespace Gauniv.WebServer.Controllers
 
             if (model.File != null)
             {
-                using (var ms = new MemoryStream())
+                using (var ms = new System.IO.MemoryStream())
                 {
                     await model.File.CopyToAsync(ms);
                     game.Payload = ms.ToArray();
@@ -125,24 +139,28 @@ namespace Gauniv.WebServer.Controllers
             game.Categories.Clear();
             if (model.CategoryIds != null)
             {
-                var categories = await _context.Categories.Where(c => model.CategoryIds.Contains(c.Id)).ToListAsync();
+                var categories = await _context.Categories
+                    .Where(c => model.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
                 game.Categories = categories;
             }
 
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Game updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/DeleteGame/5
+        // GET: /Admin/DeleteGame/{id}
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var game = await _context.Games.Include(g => g.Categories).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _context.Games.Include(g => g.Categories)
+                                           .FirstOrDefaultAsync(g => g.Id == id);
             if (game == null)
                 return NotFound();
             return View(game);
         }
 
-        // POST: /Admin/DeleteGame/5
+        // POST: /Admin/DeleteGame/{id}
         [HttpPost, ActionName("DeleteGame")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteGameConfirmed(int id)
@@ -152,6 +170,7 @@ namespace Gauniv.WebServer.Controllers
                 return NotFound();
             _context.Games.Remove(game);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Game deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

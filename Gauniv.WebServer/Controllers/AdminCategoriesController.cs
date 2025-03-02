@@ -1,8 +1,9 @@
-﻿// File: Gauniv.WebServer/Controllers/AdminCategoriesController.cs
+﻿// File: Controllers/AdminCategoriesController.cs
 using Gauniv.WebServer.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Gauniv.WebServer.Controllers
 {
@@ -39,10 +40,11 @@ namespace Gauniv.WebServer.Controllers
 
             _context.Categories.Add(model);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Category created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /AdminCategories/Edit/5
+        // GET: /AdminCategories/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -51,7 +53,7 @@ namespace Gauniv.WebServer.Controllers
             return View(category);
         }
 
-        // POST: /AdminCategories/Edit/5
+        // POST: /AdminCategories/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Category model)
@@ -64,10 +66,11 @@ namespace Gauniv.WebServer.Controllers
 
             _context.Categories.Update(model);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Category updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /AdminCategories/Delete/5
+        // GET: /AdminCategories/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -76,7 +79,7 @@ namespace Gauniv.WebServer.Controllers
             return View(category);
         }
 
-        // POST: /AdminCategories/Delete/5
+        // POST: /AdminCategories/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -87,6 +90,7 @@ namespace Gauniv.WebServer.Controllers
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Category deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

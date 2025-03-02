@@ -1,0 +1,32 @@
+﻿@model Gauniv.WebServer.Models.StatisticsViewModel
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Platform Statistics</h1>
+    <div class="mb-4">
+        <strong>Total Games Available:</strong> @Model.TotalGames
+    </div>
+    <div class="mb-4">
+        <strong>Games per Category:</strong>
+        <ul>
+            @foreach (var item in Model.GamesPerCategory)
+            {
+                <li>@item.Category: @item.Count</li>
+            }
+        </ul>
+    </div>
+    <div class="mb-4">
+        <strong>Average Games Owned per Account:</strong> @Model.AvgGamesPerAccount
+    </div>
+    <div class="mb-4">
+        <strong>Average Time Played per Game:</strong> @Model.AvgTimePlayedPerGame minutes
+    </div>
+    <div class="mb-4">
+        <strong>Max Simultaneous Players Overall:</strong> @Model.MaxSimultaneousPlayersOverall
+    </div>
+    <div class="mb-4">
+        <strong>Max Simultaneous Players per Game:</strong> @Model.MaxSimultaneousPlayersPerGame
+    </div>
+</div>

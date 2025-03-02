@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.UserFriend>
+@{
+    ViewData["Title"] = "My Friends";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">My Friends</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @foreach (var friend in Model)
+        {
+            <div class="bg-gray-800 p-4 rounded hover:shadow-xl transition duration-300">
+                <h3 class="text-xl font-bold">@friend.Friend.UserName</h3>
+                <p class="text-sm">Name: @friend.Friend.Nom @friend.Friend.Prenom</p>
+                <p class="text-sm">Email: @friend.Friend.Email</p>
+            </div>
+        }
+    </div>
+</div>

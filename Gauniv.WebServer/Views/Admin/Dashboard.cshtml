@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.Game>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Admin Dashboard</h1>
+    <p>Welcome, @User.Identity.Name!</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="/Admin/Index" class="block bg-gray-800 p-4 rounded hover:bg-gray-700">
+            <h2 class="text-xl font-bold">Manage Games</h2>
+            <p class="mt-2">Add, update, or delete games.</p>
+        </a>
+        <a href="/AdminCategories" class="block bg-gray-800 p-4 rounded hover:bg-gray-700">
+            <h2 class="text-xl font-bold">Manage Categories</h2>
+            <p class="mt-2">Add, update, or delete categories.</p>
+        </a>
+        <a href="/Players" class="block bg-gray-800 p-4 rounded hover:bg-gray-700">
+            <h2 class="text-xl font-bold">View Players</h2>
+            <p class="mt-2">See connected players and more.</p>
+        </a>
+    </div>
+
+    <hr class="my-6 border-gray-600" />
+
+    <h2 class="text-2xl font-bold text-steamBlue mb-4">Recent Games</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @foreach (var game in Model)
+        {
+            <div class="bg-gray-800 p-4 rounded hover:shadow-xl transition duration-300">
+                <h3 class="text-lg font-bold">@game.Nom</h3>
+                <p class="text-sm text-gray-400">
+                    @(game.Description.Length > 80 ? game.Description.Substring(0, 80) + "..." : game.Description)
+                </p>
+                <p class="mt-2 text-green-500 font-semibold">$@game.Prix</p>
+                <a href="/Admin/EditGame/@game.Id" class="text-steamBlue hover:underline mt-2 block">Edit</a>
+                <a href="/Admin/DeleteGame/@game.Id" class="text-steamBlue hover:underline mt-1 block">Delete</a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.Category>
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Manage Categories</h1>
+    <a href="/AdminCategories/Create" class="bg-steamGreen hover:bg-steamGreenHover text-white px-4 py-2 rounded inline-block mb-6">Add New Category</a>
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+            @TempData["Success"]
+        </div>
+    }
+    <table class="min-w-full bg-gray-800 text-white">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b">ID</th>
+                <th class="py-2 px-4 border-b">Name</th>
+                <th class="py-2 px-4 border-b">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td class="py-2 px-4 border-b">@category.Id</td>
+                    <td class="py-2 px-4 border-b">@category.Nom</td>
+                    <td class="py-2 px-4 border-b">
+                        <a href="/AdminCategories/Edit/@category.Id" class="text-steamBlue hover:underline">Edit</a> |
+                        <a href="/AdminCategories/Delete/@category.Id" class="text-steamBlue hover:underline">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

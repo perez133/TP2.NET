@@ -1,0 +1,25 @@
+﻿@model Gauniv.WebServer.Data.Category
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="max-w-md mx-auto mt-8 bg-gray-800 p-6 rounded shadow">
+    <h2 class="text-2xl font-bold text-center mb-4">Edit Category</h2>
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-4">
+            <label asp-for="Nom" class="block text-gray-300">Category Name</label>
+            <input asp-for="Nom" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white" />
+            <span asp-validation-for="Nom" class="text-red-500 text-sm"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="px-4 py-2 bg-steamGreen hover:bg-steamGreenHover text-white rounded">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.User>
+@{
+    ViewData["Title"] = "Players";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Players</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @foreach (var player in Model)
+        {
+            <div class="bg-gray-800 p-4 rounded hover:shadow-xl transition duration-300">
+                <h3 class="text-xl font-bold">@player.UserName</h3>
+                <p class="text-sm">Name: @player.Nom @player.Prenom</p>
+                <p class="text-sm">Email: @player.Email</p>
+                @* Optionally, you can display online status here if implemented *@
+            </div>
+        }
+    </div>
+</div>

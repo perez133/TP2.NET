@@ -1,0 +1,14 @@
+﻿@model Gauniv.WebServer.Data.Game
+@{
+    ViewData["Title"] = "Buy Game";
+}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-steamBlue mb-6">Buy @Model.Nom</h1>
+    <p class="mb-4">Price: $@Model.Prix</p>
+    <p class="mb-4">@Model.Description</p>
+    <form asp-action="BuyConfirmed" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="px-4 py-2 bg-steamGreen hover:bg-steamGreenHover text-white rounded">Buy Now</button>
+    </form>
+</div>

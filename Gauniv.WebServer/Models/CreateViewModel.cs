@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Gauniv.WebServer.Models
 {
-    public class CreateViewModel()
+    public class CreateViewModel
     {
         [Required]
         public string Name { get; set; }
@@ -16,10 +16,10 @@ namespace Gauniv.WebServer.Models
 
         public IFormFile File { get; set; }
 
-        // IDs of selected categories
+        // IDs of selected categories.
         public int[] CategoryIds { get; set; }
     }
-    public class EditViewModel()
+    public class EditViewModel
     {
         public int Id { get; set; }
 

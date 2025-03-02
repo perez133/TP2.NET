@@ -3,8 +3,8 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="flex flex-col lg:flex-row gap-4">
-    <!-- Left Column / Slider Menu -->
+<div class="flex flex-col lg:flex-row gap-6">
+    <!-- Left Menu Slider (visible on large screens) -->
     <aside class="bg-steamHeader p-4 w-full lg:w-64 flex-shrink-0 text-sm hidden lg:block">
         <h2 class="text-steamBlue font-bold mb-4">STEAM DECK</h2>
         <img src="/images/steamdeck-placeholder.jpg" alt="Steam Deck" class="mb-4" />
@@ -43,26 +43,22 @@
                 <h3 class="text-xl font-bold">Warframe 1999</h3>
                 <p class="text-sm">Just Updated! Free To Play</p>
             </div>
-            <!-- Carousel dots or arrows could go here -->
         </section>
 
         <!-- Special Offers -->
         <section>
             <h2 class="text-xl font-bold text-steamBlue mb-2">SPECIAL OFFERS</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Example Deal 1 -->
                 <div class="bg-gray-800 p-4 rounded">
                     <img src="/images/deal-placeholder1.jpg" alt="Deal 1" class="mb-2" />
                     <p class="font-bold">Weekend Deal -20%</p>
                     <p class="text-sm">Offer ends 31 May at 7:00pm.</p>
                 </div>
-                <!-- Example Deal 2 -->
                 <div class="bg-gray-800 p-4 rounded">
                     <img src="/images/deal-placeholder2.jpg" alt="Deal 2" class="mb-2" />
                     <p class="font-bold">Command & Conquer Franchise Sale -70%</p>
                     <p class="text-sm">Offer ends 13 Mar at 6:00pm.</p>
                 </div>
-                <!-- Example Deal 3 -->
                 <div class="bg-gray-800 p-4 rounded">
                     <img src="/images/deal-placeholder3.jpg" alt="Deal 3" class="mb-2" />
                     <p class="font-bold">Today's Deal -50%</p>
@@ -71,17 +67,39 @@
             </div>
         </section>
 
-        <!-- Browse by Category or Genre -->
+        <!-- All Games Section -->
         <section>
-            <h2 class="text-xl font-bold text-steamBlue mb-2">BROWSE BY GENRE</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                @foreach (var category in Model.Categories)
+            <h2 class="text-xl font-bold text-steamBlue mb-2">ALL GAMES</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach (var game in Model.AllGames)
                 {
-                    <a href="/Store?category=@category.Id" class="bg-gray-800 rounded p-4 hover:bg-gray-700 text-center">
-                        <h3 class="font-bold">@category.Name</h3>
-                    </a>
+                    <div class="bg-gray-800 p-4 rounded overflow-hidden hover:shadow-xl transition duration-300">
+                        <img src="@game.ImageUrl" alt="@game.Name" class="w-full h-40 object-cover mb-2" />
+                        <h3 class="text-lg font-bold">@game.Name</h3>
+                        <p class="text-sm text-gray-400">
+                            @(game.Description.Length > 80 ? game.Description.Substring(0, 80) + "..." : game.Description)
+                        </p>
+                        <div class="mt-2 text-green-500 font-semibold">
+                            $@game.Price
+                        </div>
+                    </div>
                 }
             </div>
         </section>
+
+        <!-- Quick Navigation for Logged-In Users -->
+        @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+        {
+            <section>
+                <h2 class="text-xl font-bold text-steamBlue mb-2">Quick Links</h2>
+                <div class="flex flex-wrap gap-4">
+                    <a href="/Library" class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">My Library</a>
+                    <a href="/Shop" class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Shop</a>
+                    <a href="/Statistics" class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Statistics</a>
+                    <a href="/Players" class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Players</a>
+                    <a href="/Friend" class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Friends</a>
+                </div>
+            </section>
+        }
     </div>
 </div>

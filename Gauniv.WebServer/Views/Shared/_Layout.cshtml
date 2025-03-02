@@ -26,32 +26,59 @@
     <header class="bg-steamHeader shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Left: Steam Logo and Brand -->
+                <!-- Left: Logo and Primary Navigation -->
                 <div class="flex items-center space-x-4">
                     <a href="/" class="flex items-center">
-                        <!-- Placeholder Steam-like Logo -->
                         <img src="/images/steam-logo-placeholder.png" alt="Steam Logo" class="h-8 w-auto mr-2" />
                         <span class="text-xl font-bold text-white hover:text-steamBlue">STEAM</span>
                     </a>
-
-                    <!-- Desktop Nav -->
+                    <!-- Desktop Nav: common links -->
                     <nav class="hidden md:flex items-center space-x-6 ml-8">
                         <a href="/Store" class="hover:text-steamBlue uppercase tracking-wide">Store</a>
                         <a href="/Community" class="hover:text-steamBlue uppercase tracking-wide">Community</a>
                         <a href="/About" class="hover:text-steamBlue uppercase tracking-wide">About</a>
                         <a href="/Support" class="hover:text-steamBlue uppercase tracking-wide">Support</a>
-                        <!-- Keep the swagger link in the header -->
                         <a href="/swagger" class="hover:text-steamBlue uppercase tracking-wide">Swagger</a>
+                        @* If user is logged in, show additional navigation *@
+                        @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                        {
+                            <a href="/Library" class="hover:text-steamBlue uppercase tracking-wide">My Library</a>
+                            <a href="/Shop" class="hover:text-steamBlue uppercase tracking-wide">Shop</a>
+                            <a href="/Statistics" class="hover:text-steamBlue uppercase tracking-wide">Statistics</a>
+                            <a href="/Players" class="hover:text-steamBlue uppercase tracking-wide">Players</a>
+                            <a href="/Friend" class="hover:text-steamBlue uppercase tracking-wide">Friends</a>
+                        }
                     </nav>
                 </div>
-
-                <!-- Right: Install Steam Button, Login, Language -->
+                <!-- Right: Install Button, Profile Dropdown / Login, Language -->
                 <div class="flex items-center space-x-4">
                     <a href="/Install" class="bg-steamGreen hover:bg-steamGreenHover text-white px-4 py-2 rounded hidden sm:inline-block">
                         Install Steam
                     </a>
-                    <a href="/Login" class="hover:text-steamBlue">login</a>
-                    <a href="/Language" class="hover:text-steamBlue">language ▾</a>
+                    @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                    {
+                        <div class="relative inline-block text-left">
+                            <button type="button" id="profile-button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-800 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none" aria-haspopup="true" aria-expanded="true">
+                                @User.Identity.Name
+                                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div id="profile-dropdown" class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical" aria-labelledby="profile-button">
+                                <div class="py-1" role="none">
+                                    <a href="/Account/Profile" class="block px-4 py-2 text-sm text-white hover:bg-gray-700" role="menuitem">Profile</a>
+                                    <form method="post" asp-controller="Account" asp-action="Logout" role="none">
+                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-white hover:bg-gray-700" role="menuitem">Log out</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="/Account/Login" class="hover:text-steamBlue">Login</a>
+                    }
+                    <a href="/Language" class="hover:text-steamBlue">Language ▾</a>
                     <!-- Mobile Nav Toggle -->
                     <button id="mobile-nav-toggle" class="md:hidden focus:outline-none hover:text-steamBlue">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,20 +89,41 @@
                 </div>
             </div>
         </div>
-        <!-- Mobile Nav -->
+        <!-- Mobile Navigation -->
         <div id="mobile-nav" class="bg-steamHeader hidden md:hidden">
             <div class="px-4 py-2 space-y-1">
                 <a href="/Store" class="block hover:text-steamBlue uppercase">Store</a>
-                <a href="/Community" class="block hover:text-steAMBlue uppercase">Community</a>
+                <a href="/Community" class="block hover:text-steamBlue uppercase">Community</a>
                 <a href="/About" class="block hover:text-steamBlue uppercase">About</a>
                 <a href="/Support" class="block hover:text-steamBlue uppercase">Support</a>
                 <a href="/swagger" class="block hover:text-steamBlue uppercase">Swagger</a>
+                @if (User?.Identity?.IsAuthenticated is not null && User.Identity.IsAuthenticated)
+                {
+                    <a href="/Library" class="block hover:text-steamBlue uppercase">My Library</a>
+                    <a href="/Shop" class="block hover:text-steamBlue uppercase">Shop</a>
+                    <a href="/Statistics" class="block hover:text-steamBlue uppercase">Statistics</a>
+                    <a href="/Players" class="block hover:text-steamBlue uppercase">Players</a>
+                    <a href="/Friend" class="block hover:text-steamBlue uppercase">Friends</a>
+                }
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @* Display TempData notifications if any *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                @TempData["Error"]
+            </div>
+        }
         @RenderBody()
     </main>
 
@@ -84,7 +132,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm">
             <p class="text-center">
                 &copy; 2024 - Gauniv.WebServer. All rights reserved.
-                <a href="/Home/Privacy" class="text-steAMBlue hover:underline">Privacy</a>
+                <a href="/Home/Privacy" class="text-steamBlue hover:underline">Privacy</a>
             </p>
         </div>
     </footer>
@@ -92,9 +140,30 @@
     <!-- Script for toggling mobile nav -->
     <script>
         document.getElementById('mobile-nav-toggle').addEventListener('click', function() {
-          const nav = document.getElementById('mobile-nav');
-          nav.classList.toggle('hidden');
+            const nav = document.getElementById('mobile-nav');
+            nav.classList.toggle('hidden');
         });
     </script>
+
+    <!-- Script for toggling profile dropdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileButton = document.getElementById('profile-button');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            if (profileButton) {
+                profileButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('hidden');
+                });
+            }
+            document.addEventListener('click', function() {
+                if (profileDropdown) {
+                    profileDropdown.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
