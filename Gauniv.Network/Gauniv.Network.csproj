@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="..\..\..\Users\batiste.gros\Downloads\v1.json" Link="OpenAPIs\v1.json" />
+    <OpenApiReference Include="..\v1.json" Link="OpenAPIs\v1.json" />
   </ItemGroup>
 
   <ItemGroup>
